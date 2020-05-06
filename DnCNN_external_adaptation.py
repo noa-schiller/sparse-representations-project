@@ -16,20 +16,17 @@ model_pool = 'model_zoo'
 model_name = 'dncnn_50'
 sigma = 50
 
-test_im # complete
-train_im # complete
+test_im = # complete
+train_im = # complete
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 criterion = nn.MSELoss(reduction='sum')
 lr = 1e-5
 epochs = 50
 
-test_results['psnr_before'] = []
-test_results['psnr_after_psnr'] = []
-
 model_path = os.path.join(model_pool, model_name+'.pth')
-test_path = os.path.join(testsets, test_im)
-train_path = os.path.join(testsets, train_im)
+test_path = os.path.join(test_im)
+train_path = os.path.join(train_im)
 
 # load model
 model = DnCNN(in_nc=n_channels, out_nc=n_channels, nc=64, nb=17, act_mode='R')
@@ -48,12 +45,11 @@ y = y.to(device)
 
 # denoise the image to compare PSNR before and after adaptation
 with torch.no_grad():
-x_ = model(y)
+  x_ = model(y)
 
 # compute PSNR
 denoised_im = util.tensor2uint(x_)
 prev_psnr = util.calculate_psnr(denoised_im, orig_im, border=0)
-test_results['psnr_before'] = prev_psnr
 
 # external adaptation
 
@@ -87,7 +83,6 @@ with torch.no_grad():
 
 denoised_im = util.tensor2uint(x_)
 psnr = util.calculate_psnr(denoised_im, orig_im, border=0)
-test_results['after_psnr'] = psnr
 
 print('Before adaptation - PSNR: {:.2f} dB; After adaptation - PSNR: {:.2f} dB'
 .format(prev_psnr, psnr))

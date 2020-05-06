@@ -119,8 +119,8 @@ for idx,batch in enumerate(tqdm(loader)):
 	  batch_out_blocks = torch.zeros_like(batch_noisy_blocks)
 
 	  for i, inp in enumerate(patch_loader):
-		id_from, id_to = i * patch_loader.batch_size, (i + 1) * patch_loader.batch_size
-		batch_out_blocks[id_from:id_to] = model(inp)
+		  id_from, id_to = i * patch_loader.batch_size, (i + 1) * patch_loader.batch_size
+		  batch_out_blocks[id_from:id_to] = model(inp)
 
 	  output = block._agregate_blocks(batch_out_blocks)
 	  psnr_batch = -10 * torch.log10((output.clamp(0., 1.) - batch).pow(2).flatten(2, 3).mean(2)).mean()
@@ -140,13 +140,13 @@ for idx,batch in enumerate(tqdm(loader)):
 	  # add noise to each patch and optimize with it and the noisy patch
 	  for inp in tqdm(patch_loader):
 
-		noise = torch.randn_like(inp) * noise_std
-		noisy_inp = inp + noise
-		optimizer.zero_grad()
-		retrain_output = model(noisy_inp)
-		loss = (mask * (retrain_output - inp)).pow(2).sum() / retrain_output.shape[0]
-		loss.backward()
-		optimizer.step()      
+		  noise = torch.randn_like(inp) * noise_std
+		  noisy_inp = inp + noise
+		  optimizer.zero_grad()
+		  retrain_output = model(noisy_inp)
+		  loss = (mask * (retrain_output - inp)).pow(2).sum() / retrain_output.shape[0]
+		  loss.backward()
+		  optimizer.step()      
 
 	# denoise the image again after adaptation
 	model.eval()
@@ -158,8 +158,8 @@ for idx,batch in enumerate(tqdm(loader)):
 	  batch_out_blocks = torch.zeros_like(batch_noisy_blocks)
 
 	  for i, inp in enumerate(patch_loader):  # if it doesnt fit in memory
-		id_from, id_to = i * patch_loader.batch_size, (i + 1) * patch_loader.batch_size
-		batch_out_blocks[id_from:id_to] = model(inp)
+		  id_from, id_to = i * patch_loader.batch_size, (i + 1) * patch_loader.batch_size
+		  batch_out_blocks[id_from:id_to] = model(inp)
 
 	  output = block._agregate_blocks(batch_out_blocks)
 
